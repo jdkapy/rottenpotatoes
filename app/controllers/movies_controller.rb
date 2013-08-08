@@ -7,7 +7,22 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+ #   @movies = Movie.all
+
+
+        if params[:sort]
+           #ordena por el campo que reciba como parametro
+           @sorting = params[:sort]
+           flash[:notice] = "Ordenado Ascendentemente por: #{@sorting} "
+           @movies = Movie.order("#{@sorting} ASC")
+           #@movies = Movie.all
+        else
+           #La primera vez que carga aparece sin ordenar
+           flash[:notice] = "Sin ordenar"
+           @movies = Movie.all
+        end
+
+      
   end
 
   def new
@@ -37,5 +52,8 @@ class MoviesController < ApplicationController
     flash[:notice] = "Movie '#{@movie.title}' deleted."
     redirect_to movies_path
   end
+  
+
+    
 
 end

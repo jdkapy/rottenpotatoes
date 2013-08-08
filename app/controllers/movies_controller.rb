@@ -1,5 +1,11 @@
 class MoviesController < ApplicationController
 
+   def initialize
+        @all_ratings = ['G','PG','PG-13','R']
+	#super añade caracteristica pero deja la existente
+	super     
+   end
+
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID

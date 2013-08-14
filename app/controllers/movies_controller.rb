@@ -2,6 +2,7 @@ class MoviesController < ApplicationController
 
    def initialize
         @all_ratings = Movie.all_ratings
+        @ratings = Movie.all_ratings
 
 	#super añade caracteristica pero deja la existente
 	super     
@@ -14,44 +15,50 @@ class MoviesController < ApplicationController
   end
 
   def index
- #   @movies = Movie.all
  
-         
-         
-         if params[:commit]
-           @ratings = params[:ratings]
-           
-           #@ratings.each_key{|key,value| values_ratings=#{key}}
-           
-
-          flash[:notice] = "Criterios de busqueda  : #{@ratings} "
-
-         
-          #keys = @ratings.keys.join("\',\'")
-          #keys = @ratings.keys.join(",")          
-          #keys = @ratings.keys.join("\\\'"+","+"/'")
-          
-
-          #logger.info "-----wkst---key ["+ keys.joing + "]"          
-
-          #flash[:notice] = "Criterios de busqueda 2 :"+  keys
-           
-          @movies =Movie.where(:rating =>  @ratings.keys )
-
-          #  @movies = Movie.all
-          end if
-
-        if params[:sort]
-           #ordena por el campo que reciba como parametro
-           @sorting = params[:sort]
-           flash[:notice] = "Ordenado Ascendentemente por: #{@sorting} "
-           @movies = Movie.order("#{@sorting} ASC")
-           #@movies = Movie.all        
+ 
+        
+    #parametro commit marca que se ha clicado en el boton de filtro     
+    if params[:commit]
+      #valores seleccionados en el combo
+      @ratings = params[:ratings]
+      session[:ratings] = @ratings      
+      @movies =Movie.where(:rating =>  @ratings.keys )
+      #Si tenemos ordenado la lista se filtra ordenado
+      
+      
+      logger.debug("================>"+session[:sort])
+      if session[:sort]
+        @ssort=session[:sort]
+        logger.debug("================>Ordenando movies")
+        @movies=Movie.where(:rating =>  @ratings.keys ).order("#{@ssort} ASC")
+        logger.debug("================>Ordenado movies wk1")
+      end
+      logger.debug("================>Ordenado movies wk2")
+    elsif params[:sort]#if 
+logger.debug("================>Ordenado movies wk3")
+    #if params[:sort]
+      logger.debug("================>Ordenado movies wk4")
+       #ordena por el campo que reciba como parametro
+       @sorting = params[:sort]
+       session[:sort]    = @sorting
+       if session[:ratings] 
+         @srating=session[:ratings] 
+         @movies=Movie.where(:rating =>  @srating.keys ).order("#{@sorting} ASC")
         else
-           #La primera vez que carga aparece sin ordenar
-           flash[:notice] = "Sin ordenar"
-           @movies = Movie.all
-        end
+          @movies = Movie.order("#{@sorting} ASC")
+       end
+       #@movies = Movie.all        
+    else
+      logger.debug("================>Ordenado movies wk5")
+       #La primera vez que carga aparece sin ordenar
+       flash[:notice] = "Sin ordenar"
+       @movies = Movie.all
+    end
+    logger.debug("================>Ordenado movies wk6")
+
+        
+        
 
       
   end

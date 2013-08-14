@@ -29,14 +29,15 @@ class MoviesController < ApplicationController
          
           #keys = @ratings.keys.join("\',\'")
           #keys = @ratings.keys.join(",")          
-          keys = @ratings.keys.join("\\\'"+","+"/'")
+          #keys = @ratings.keys.join("\\\'"+","+"/'")
           
 
           #logger.info "-----wkst---key ["+ keys.joing + "]"          
 
           #flash[:notice] = "Criterios de busqueda 2 :"+  keys
            
-          @movies =Movie.short_rating(keys,"")  
+          @movies =Movie.where(:rating =>  @ratings.keys )
+
           #  @movies = Movie.all
           end if
 

@@ -1,7 +1,8 @@
 class MoviesController < ApplicationController
 
    def initialize
-        @all_ratings = ['G','PG','PG-13','R']
+        @all_ratings = Movie.all_ratings
+
 	#super añade caracteristica pero deja la existente
 	super     
    end
@@ -14,14 +15,37 @@ class MoviesController < ApplicationController
 
   def index
  #   @movies = Movie.all
+ 
+         
+         
+         if params[:commit]
+           @ratings = params[:ratings]
+           
+           #@ratings.each_key{|key,value| values_ratings=#{key}}
+           
 
+          flash[:notice] = "Criterios de busqueda  : #{@ratings} "
+
+         
+          #keys = @ratings.keys.join("\',\'")
+          #keys = @ratings.keys.join(",")          
+          keys = @ratings.keys.join("\\\'"+","+"/'")
+          
+
+          #logger.info "-----wkst---key ["+ keys.joing + "]"          
+
+          #flash[:notice] = "Criterios de busqueda 2 :"+  keys
+           
+          @movies =Movie.short_rating(keys,"")  
+          #  @movies = Movie.all
+          end if
 
         if params[:sort]
            #ordena por el campo que reciba como parametro
            @sorting = params[:sort]
            flash[:notice] = "Ordenado Ascendentemente por: #{@sorting} "
            @movies = Movie.order("#{@sorting} ASC")
-           #@movies = Movie.all
+           #@movies = Movie.all        
         else
            #La primera vez que carga aparece sin ordenar
            flash[:notice] = "Sin ordenar"
